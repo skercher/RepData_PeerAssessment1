@@ -1,11 +1,5 @@
----
-title: 'Reproducible Research: Peer Assessment 1'
-author: Shawn Kercher
-output:
-  html_document:
-    keep_md: yes
-  pdf_document: default
----
+# Reproducible Research: Peer Assessment 1
+Shawn Kercher  
 
 
 ## Loading and preprocessing the data
@@ -15,7 +9,8 @@ Show any code that is needed to
 
 2. Process/transform the data (if necessary) into a format suitable for your analysis.
 	
-```{r}
+
+```r
 zipFile <- "activity.zip"
 fileName <- "activity.csv"
 
@@ -35,7 +30,8 @@ For this part of the assignment, you can ignore the missing values in the datase
 
 2.  Calculate and report the mean and median total number of steps taken per day
 
-```{r}
+
+```r
 # omit all NA
 dataFrame2 <- na.omit(dataFrame)
 
@@ -45,12 +41,26 @@ tableSteps <- aggregate(steps ~ date, dataFrame2 , sum)
 
 # create histogram for Total Setps in a day
 hist(tableSteps$steps,xlab = "Total Steps In a Day", main = "Histogram of TOTAL #  of Steps per Day", col=4)
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)\
+
+```r
 # mean steps
 mean(tableSteps$steps,na.rm = TRUE)
+```
 
+```
+## [1] 10766.19
+```
+
+```r
 # median steps
 median(tableSteps$steps,na.rm = TRUE)
+```
+
+```
+## [1] 10765
 ```
 
 ## What is the average daily activity pattern?
@@ -58,18 +68,28 @@ median(tableSteps$steps,na.rm = TRUE)
 
 2. Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r}
+
+```r
 # aggregate steps per interval
 tableIntervalSteps <- aggregate(steps ~ interval, dataFrame2, mean)
 
 # create plot steps per interval
 plot(tableIntervalSteps$interval,tableIntervalSteps$steps,type="l",col=1,main="Average number of Daily Steps", xlab = "Interval", ylab = "Average #  of steps")
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)\
+
+```r
 # max average steps interval
 maxAverageStepsInterval <- which.max(tableIntervalSteps$steps)
 
 # table max interval steps
 tableIntervalSteps[maxAverageStepsInterval,]
+```
+
+```
+##     interval    steps
+## 104      835 206.1698
 ```
 
 
@@ -82,13 +102,20 @@ tableIntervalSteps[maxAverageStepsInterval,]
 3. Create a new dataset that is equal to the original dataset but with the missing data filled in.
 
 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
-```{r}
+
+```r
 # missing data NA
 dataFrameNA <- dataFrame[!complete.cases(dataFrame),]
 
 # num of rows
 nrow(dataFrameNA)
+```
 
+```
+## [1] 2304
+```
+
+```r
 # perform imputation 
 for(i in 1:nrow(dataFrame)){
         if(is.na(dataFrame$steps[i])){
@@ -104,12 +131,26 @@ tableDateStepsImpute <- aggregate(steps ~ date, dataFrame, sum)
 
 # create histogram of total number of steps in a day
 hist(tableDateStepsImpute$steps, col=1, main="Histogram of total number of steps per day", xlab = "Total # of Steps in a Day")
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)\
+
+```r
 # mean of total # steps per day
 mean(tableDateStepsImpute$steps)
+```
 
+```
+## [1] 10766.19
+```
+
+```r
 # median of total # steps per day
 median(tableDateStepsImpute$steps)
+```
+
+```
+## [1] 10766.19
 ```
 
 
@@ -117,7 +158,8 @@ median(tableDateStepsImpute$steps)
 1. Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
 
 2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). The plot should look something like the following, which was creating using simulated data:
-```{r}
+
+```r
 # convert date to date class
 dataFrame$date <- as.Date(dataFrame$date, "%Y-%m-%d")
 
@@ -141,6 +183,14 @@ tableIntervalStepsImputed <- aggregate(steps ~ interval + dayType, dataFrame, me
 
 # create plot
 library(ggplot2)
+```
 
+```
+## Warning: package 'ggplot2' was built under R version 3.2.3
+```
+
+```r
 qplot(interval, steps, data=tableIntervalStepsImputed, geom=c("line"), xlab = "Interval", ylab = "# of Steps", main = "") + facet_wrap(~ dayType, ncol = 1)
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)\
